@@ -1,4 +1,5 @@
 #!/bin/bash
+#Script to check for new versions and update Forge for linux by Asta1986.
 
 replaceIfAccepted() {
 if [[ "$1" = "Y"  ||  "$1" = "y" ]] ; then
