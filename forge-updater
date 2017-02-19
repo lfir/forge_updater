@@ -15,7 +15,7 @@ fi
 echo -n "Enter the full path to the Forge directory:"
 read localDir
 
-wget -O /tmp/fv http://www.cardforge.link/releases/forge/forge-gui-desktop
+wget -qO /tmp/fv http://www.cardforge.link/releases/forge/forge-gui-desktop
 grep -Po '(?<==")\d+.\d+.\d+(?=/")' /tmp/fv | tail -1 > /tmp/fvl
 
 baseUrl="http://www.cardforge.link/releases/forge/forge-gui-desktop"
@@ -26,7 +26,8 @@ latestVInt=$(sed 's/\.//g' /tmp/fvl)
 if (( localVInt < latestVInt )) ; then
 	downloadUrl="$baseUrl/$latestVersion/forge-gui-desktop-$latestVersion.tar.bz2"
 	mkdir -p ~/Downloads/Forge
-	wget -O - $downloadUrl | tar xjC ~/Downloads/Forge -f - && \
+	echo "Downloading new version. Please wait."
+	wget -qO - $downloadUrl | tar xjC ~/Downloads/Forge -f - && \
 	echo -n "Replace local version with new version? [Y/N]:"
 	read answer
 	replaceIfAccepted $answer
