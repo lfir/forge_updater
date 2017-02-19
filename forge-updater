@@ -17,9 +17,9 @@ read localDir
 
 wget -O /tmp/fv http://www.cardforge.link/releases/forge/forge-gui-desktop
 grep -Po '(?<==")\d+.\d+.\d+(?=/")' /tmp/fv | tail -1 > /tmp/fvl
-latestVersion=$(cat /tmp/fvl)
 
 baseUrl="http://www.cardforge.link/releases/forge/forge-gui-desktop"
+latestVersion=$(cat /tmp/fvl)
 localVInt=$(grep -Po 'ver \K\d+.\d.+\d+$' $localDir/CHANGES.txt | sed 's/\.//g')
 latestVInt=$(sed 's/\.//g' /tmp/fvl)
 
