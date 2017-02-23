@@ -2,7 +2,7 @@
 #Script to check for new versions and update Forge for linux by Asta1986.
 
 replaceIfAccepted() {
-if [[ "$1" = "Y"  ||  "$1" = "y" ]] ; then
+if [[ -n "$1" ]] ; then
 	cp $localDir/forge.profile.properties ~/Downloads/Forge &> /dev/null
 	rm -r $localDir
 	mv ~/Downloads/Forge $localDir
@@ -12,12 +12,15 @@ else
 fi
 }
 
-echo -n "Enter the full path to the Forge directory:"
-read localDir
+if ! [[ -f ~/.forge-updater ]] ; then
+read -p "Enter the full path to the Forge directory: " orgDir
+echo $orgDir > ~/.forge-updater
+fi
 
 wget -qO /tmp/fv http://www.cardforge.link/releases/forge/forge-gui-desktop
 grep -Po '(?<==")\d+.\d+.\d+(?=/")' /tmp/fv | tail -1 > /tmp/fvl
 
+localDir=$(cat ~/.forge-updater)
 baseUrl="http://www.cardforge.link/releases/forge/forge-gui-desktop"
 latestVersion=$(cat /tmp/fvl)
 localVInt=$(grep -Po 'ver \K\d+.\d.+\d+$' $localDir/CHANGES.txt | sed 's/\.//g')
@@ -28,9 +31,8 @@ if (( localVInt < latestVInt )) ; then
 	mkdir -p ~/Downloads/Forge
 	echo "Downloading new version. Please wait."
 	wget -qO - $downloadUrl | tar xjC ~/Downloads/Forge -f - && \
-	echo -n "Replace local version with new version? [Y/N]:"
-	read answer
-	replaceIfAccepted $answer
+	read -p "Replace local version with new version? [Y/N]: " answer
+	replaceIfAccepted $(echo $answer | grep -oi y)
 else
 	echo "Forge is up to date."
 fi
