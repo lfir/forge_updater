@@ -12,11 +12,13 @@ else
 fi
 }
 
+#The first time the updater is run register the local game directory.
 if ! [[ -f ~/.forge-updater ]] ; then
 read -p "Enter the full path to the Forge directory: " orgDir
 echo $orgDir > ~/.forge-updater
 fi
 
+#Get the latest available version from the forge download site.
 wget -qO /tmp/fv http://www.cardforge.link/releases/forge/forge-gui-desktop
 grep -Po '(?<==")\d+.\d+.\d+(?=/")' /tmp/fv | tail -1 > /tmp/fvl
 
@@ -26,6 +28,8 @@ latestVersion=$(cat /tmp/fvl)
 localVInt=$(grep -Po 'ver \K\d+.\d.+\d+$' $localDir/CHANGES.txt | sed 's/\.//g')
 latestVInt=$(sed 's/\.//g' /tmp/fvl)
 
+#Check whether the local version is older than the available one.
+#Ask the user if he wants to replace the local version with the one downloaded.
 if (( localVInt < latestVInt )) ; then
 	downloadUrl="$baseUrl/$latestVersion/forge-gui-desktop-$latestVersion.tar.bz2"
 	mkdir -p ~/Downloads/Forge
@@ -37,4 +41,5 @@ else
 	echo "Forge is up to date."
 fi
 
+#Erase auxiliary files.
 rm /tmp/fv /tmp/fvl
