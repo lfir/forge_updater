@@ -18,9 +18,8 @@ read -rp "Enter the full path to the Forge directory: " orgDir
 echo "$orgDir" > ~/.forge-updater
 fi
 
-baseUrl="https://releases.cardforge.org/forge/forge-gui-desktop"
-
 #Get the latest available version from the forge download site.
+baseUrl="https://releases.cardforge.org/forge/forge-gui-desktop"
 wget -qO /tmp/fv "$baseUrl"
 grep -Po '(?<==")\d+.\d+.\d+(?=/")' /tmp/fv | tail -1 > /tmp/fvl
 
