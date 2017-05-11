@@ -3,12 +3,12 @@
 
 replaceIfAccepted() {
 if [[ -n "$1" ]] ; then
-	cp "$localDir/forge.profile.properties" ~/Downloads/Forge &> /dev/null
+	cp "$localDir/forge.profile.properties" "$ldd" &> /dev/null
 	rm -r "$localDir"
-	mv ~/Downloads/Forge "$localDir"
+	mv "$ldd" "$localDir"
 	echo "All done."
 else
-	echo "Old version not replaced. The new version can be found in '~/Downloads/Forge'."
+	echo "Old version not replaced. The new version can be found in $ldd."
 fi
 }
 
@@ -18,24 +18,26 @@ read -pr "Enter the full path to the Forge directory: " orgDir
 echo "$orgDir" > ~/.forge-updater
 fi
 
+baseUrl="https://releases.cardforge.org/forge/forge-gui-desktop"
+
 #Get the latest available version from the forge download site.
-wget -qO /tmp/fv http://www.cardforge.link/releases/forge/forge-gui-desktop
+wget -qO /tmp/fv "$baseUrl"
 grep -Po '(?<==")\d+.\d+.\d+(?=/")' /tmp/fv | tail -1 > /tmp/fvl
 
+ldd=$(xdg-user-dir DOWNLOAD)/Forge
 localDir=$(cat ~/.forge-updater)
-baseUrl="http://www.cardforge.link/releases/forge/forge-gui-desktop"
 latestVersion=$(cat /tmp/fvl)
-localVInt=$(grep -Po 'ver \K\d+.\d.+\d+$' "$localDir/CHANGES.txt" | sed 's/\.//g')
+localVInt=$(grep -Po '\-\K\d+.\d.+\d+' "$localDir/forge.sh" | sed 's/\.//g')
 latestVInt=$(sed 's/\.//g' /tmp/fvl)
 
 #Check whether the local version is older than the available one.
 #Ask the user if he wants to replace the local version with the one downloaded.
 if (( localVInt < latestVInt )) ; then
 	downloadUrl="$baseUrl/$latestVersion/forge-gui-desktop-$latestVersion.tar.bz2"
-	mkdir -p ~/Downloads/Forge
+	mkdir -p "$ldd"
 	echo "Downloading new version. Please wait."
-	wget -qO - "$downloadUrl" | tar xjC ~/Downloads/Forge -f - && \
-	read -pr "Replace local version with new version? [Y/N]: " answer
+	wget -qO - "$downloadUrl" | tar xjC "$ldd" -f - && \
+	read -rp "Replace local version with new version? [Y/N]: " answer
 	replaceIfAccepted "$(echo "$answer" | grep -oi y)"
 else
 	echo "Forge is up to date."
