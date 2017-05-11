@@ -14,7 +14,7 @@ fi
 
 #The first time the updater is run register the local game directory.
 if ! [[ -f ~/.forge-updater ]] ; then
-read -pr "Enter the full path to the Forge directory: " orgDir
+read -rp "Enter the full path to the Forge directory: " orgDir
 echo "$orgDir" > ~/.forge-updater
 fi
 
