@@ -21,7 +21,7 @@ fi
 #Get the latest available version from the forge download site.
 baseUrl='https://releases.cardforge.org/forge/forge-gui-desktop'
 wget -qO '/tmp/fv' "$baseUrl"
-grep -Po '(?<==")\d+.\d+.\d+(?=/")' "/tmp/fv" | tail -1 > '/tmp/fvl'
+grep -Po '(?<==")\d+.\d+.\d+(?=/")' '/tmp/fv' | tail -1 > '/tmp/fvl'
 
 ldd=$(xdg-user-dir DOWNLOAD)/Forge
 localDir=$(cat "${HOME}/.forge-updater")
