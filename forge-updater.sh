@@ -1,7 +1,8 @@
 #!/bin/bash
 #Script to check for new versions and update Forge for linux by Asta1986.
 
-#Auxiliary function. Replace current game folder with the one downloaded.
+##Auxiliary functions.
+#Replace current game folder with the one downloaded.
 replaceIfAccepted() {
 if [[ -n "$1" ]] ; then
 	cp "${localDir}/forge.profile.properties" "$ldd" &> '/dev/null'
@@ -13,7 +14,7 @@ else
 fi
 }
 
-#Auxiliary function. Ask the user if he wants to replace the local version with the one downloaded.
+#Ask the user if he wants to replace the local version with the one downloaded.
 beginDownload() {
 if [[ -n "$1" ]] ; then
 	downloadUrl="${baseUrl}/${latestVersion}/forge-gui-desktop-${latestVersion}.tar.bz2"
@@ -26,6 +27,18 @@ else
 	echo 'Goodbye.'
 fi
 }
+
+#Check whether the local version is older than the available one.
+#Ask the user if he wants to download the new version now.
+forge-updater() {
+if (( localMainVInt < latestMainVInt )) || (( localVInt < latestVInt )) ; then
+	read -rp 'New version available. Download it now? [Y/N]: ' answer
+	beginDownload "$(echo "$answer" | grep -oi y)"
+else
+	echo 'Forge is up to date.'
+fi
+}
+##
 
 #The first time the updater is run register the local game directory.
 if ! [[ -f "${HOME}/.forge-updater" ]] ; then
@@ -47,16 +60,12 @@ latestVInt=$(sed 's/\.//g' '/tmp/fvl')
 #Also check using only the first and second digits since sometimes Forge release versions 
 #don't have the same number of digits (i. e. 1.5.65 and 1.6.0).
 localMainVInt=$(echo "$localVInt" | grep -Po '^[0-9]{2}')
-latestMainVInt=$(echo "$latestVInt" |grep -Po '^[0-9]{2}')
+latestMainVInt=$(echo "$latestVInt" | grep -Po '^[0-9]{2}')
 
-#Check whether the local version is older than the available one.
-#Ask the user if he wants to download the new version now.
-if (( localMainVInt < latestMainVInt )) || (( localVInt < latestVInt )) ; then
-	read -rp 'New version available. Download it now? [Y/N]: ' answer
-	beginDownload "$(echo "$answer" | grep -oi y)"
-else
-	echo 'Forge is up to date.'
+#Allow sourcing the script.
+if [[ ${BASH_SOURCE[0]} = "$0" ]] ; then
+	forge-updater
+
+	#Erase auxiliary files.
+	rm '/tmp/fv' '/tmp/fvl'
 fi
-
-#Erase auxiliary files.
-rm '/tmp/fv' '/tmp/fvl'
