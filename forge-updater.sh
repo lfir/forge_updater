@@ -33,11 +33,11 @@ replaceIfAccepted() {
 beginDownload() {
 	if [[ -n "$1" ]] ; then
 		downloadUrl="${baseUrl}/${latestVersion}/forge-gui-desktop-${latestVersion}.tar.bz2"
-		    mkdir -p "$ldd"
-		    echo 'Downloading new version. Please wait.'
-		    wget --show-progress -qO - "$downloadUrl" | tar xjC "$ldd" -f - && \
+		mkdir -p "$ldd"
+		echo 'Downloading new version. Please wait.'
+		wget --show-progress -qO - "$downloadUrl" | tar xjC "$ldd" -f - && \
 		read -rp 'Replace local version with new version? [Y/N]: ' answer
-		    replaceIfAccepted "$(echo "$answer" | grep -oi y)"
+		replaceIfAccepted "$(echo "$answer" | grep -oi y)"
 	else
 		echo 'Goodbye.'
 	fi
