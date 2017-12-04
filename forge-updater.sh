@@ -21,7 +21,7 @@ cleanUp() {
 replaceIfAccepted() {
 	if [[ -n "$1" ]] ; then
 		cp "${localDir}/forge.profile.properties" "$ldd" &> '/dev/null'
-		rm -r "$localDir"
+		rm -rf "$localDir"
 		mv "$ldd" "$localDir"
 		echo 'All done.'
 	else
