@@ -6,7 +6,7 @@
 registerLocalDir() {
 	if ! [[ -f "${HOME}/.forge-updater" ]] ; then
 		read -rp 'Enter the full path to the Forge directory: ' orgDir
-		echo "$orgDir" > "${HOME}/.forge-updater"
+		echo "$orgDir" | sed 's/\/$//' > "${HOME}/.forge-updater"
 	fi
 	ldd=$(xdg-user-dir DOWNLOAD)/Forge
 	localDir=$(cat "${HOME}/.forge-updater")
@@ -21,7 +21,7 @@ cleanUp() {
 replaceIfAccepted() {
 	if [[ -n "$1" ]] ; then
 		cp "${localDir}/forge.profile.properties" "$ldd" &> '/dev/null'
-		rm -rf "$localDir"
+		rm -r "$localDir"
 		mv "$ldd" "$localDir"
 		echo 'All done.'
 	else
