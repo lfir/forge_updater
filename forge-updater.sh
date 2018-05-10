@@ -49,8 +49,8 @@ forge-updater() {
 	registerLocalDir
 	#Get the latest available version from the forge download site.
 	baseUrl='https://releases.cardforge.org/forge/forge-gui-desktop'
-	wget -qO '/tmp/fv' "$baseUrl"
-	grep -Po '(?<==")\d+.\d+.\d+(?=/")' '/tmp/fv' | tail -1 > '/tmp/fvl'
+	wget -qO '/tmp/fv' "${baseUrl}/maven-metadata.xml"
+	grep -Po '(?<e>)\d.\d.\d+(?=</r)' '/tmp/fv' > '/tmp/fvl'
 	latestVersion=$(cat '/tmp/fvl')
 	#Make an int for each version to compare them.
 	localVInt=$(grep -Po '\-\K\d+.\d.+\d+' "$localDir/forge.sh" | sed 's/\.//g')
